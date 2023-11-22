@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class Category(models.Model):
+    # configura o plural na página admin
     class Meta:
         verbose_name = "Category"
         verbose_name_plural = "Categories"
