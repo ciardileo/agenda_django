@@ -5,7 +5,7 @@ from contact import models
 
 @admin.register(models.Contact)
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('id', 'first_name', 'last_name', 'email', 'phone', 'description')  # campos que serão mostrados na tabela 
+    list_display = ('id', 'first_name', 'last_name', 'category', 'email', 'phone', 'description')  # campos que serão mostrados na tabela 
     ordering = ("-id",)  # ordena o id por ordem decrescente
     list_filter = ('created_date',)  # filtro
     search_fields = ('id', 'first_name', 'last_name',)  # campos que podem ser pesquisados
@@ -13,3 +13,10 @@ class ContactAdmin(admin.ModelAdmin):
     list_max_show_all = 50  # máximo de páginas mostradas no "mostrar tudo"
     list_editable = ('email',)  # poder editar campo pela tabela mesmo
     list_display_links = ('id', 'first_name', 'last_name')  # elementos que terão um link para a página do registro
+    
+    
+@admin.register(models.Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name',)  # campos que serão mostrados na tabela 
+    ordering = ("-name",)  # ordena o id por ordem decrescente
+   
