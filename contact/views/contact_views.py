@@ -2,14 +2,19 @@ from django.shortcuts import render
 from contact.models import Contact
 from django.http import Http404
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 # Create your views here.
 
 def index(request):
 	contact = Contact.objects.filter(show=True)
+ 
+	paginator = Paginator(contact, 25)
+	page_number = request.GET.get("page")
+	page_obj = paginator.get_page(page_number)
 	
 	context = {
-		'contacts': contact
+		'contacts': page_obj
 	}
 	
 	return render(request, "contact/index.html", context)
@@ -24,8 +29,12 @@ def search(request):
     # essa função Q nos permite fazer o filtro como se fosse um "ou"
 	contact = Contact.objects.filter(show=True).filter(Q(first_name__icontains=value) | Q(last_name__icontains=value) | Q(phone__icontains=value) | Q(email__icontains=value))
 	
+	paginator = Paginator(contact, 25)
+	page_number = request.GET.get("page")
+	page_obj = paginator.get_page(page_number)
+	
 	context = {
-		'contacts': contact
+		'contacts': page_obj
 	}
 
 	return render(request, "contact/index.html", context)
@@ -57,3 +66,8 @@ def contact_page(request, id):
 	return render(  # renderiza um arquivo html para a view
 		request, "contact/contact_page.html", context
 	)
+ 
+ 
+def create_contact(request):
+    
+    return render(request, 'contact/create.html')
