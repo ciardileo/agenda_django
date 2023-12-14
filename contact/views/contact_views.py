@@ -3,9 +3,17 @@ from contact.models import Contact
 from django.http import Http404
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django import forms
+
+# classe que gera um form automática para o model, com todos os campos que quisermos
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = Contact
+        fields = ('first_name', 'last_name', 'phone', 'email', 'category', 'description',)
 
 # Create your views here.
 
+# página inicial
 def index(request):
 	contact = Contact.objects.filter(show=True)
  
@@ -19,6 +27,8 @@ def index(request):
 	
 	return render(request, "contact/index.html", context)
 
+
+# página de pesquisa
 def search(request):
 	value = request.GET.get('q', '').strip()
  
@@ -26,7 +36,7 @@ def search(request):
 		return redirect('index')
 	
 	# icontains faz com que o filtro retorne caso o campo conter o que nós queremos pesquisar, e o I indica que não é case sensitive
-    # essa função Q nos permite fazer o filtro como se fosse um "ou"
+	# essa função Q nos permite fazer o filtro como se fosse um "ou"
 	contact = Contact.objects.filter(show=True).filter(Q(first_name__icontains=value) | Q(last_name__icontains=value) | Q(phone__icontains=value) | Q(email__icontains=value))
 	
 	paginator = Paginator(contact, 25)
@@ -40,6 +50,7 @@ def search(request):
 	return render(request, "contact/index.html", context)
 
 
+# página de contato
 def contact_page(request, id):
 	print(f"contato {id}")
 	
@@ -67,7 +78,22 @@ def contact_page(request, id):
 		request, "contact/contact_page.html", context
 	)
  
- 
+
+# página de criação de contato
 def create_contact(request):
-    
-    return render(request, 'contact/create.html')
+	if request.method == "POST":
+		print("Você enviou um formulário")
+		print(request.POST.get("first_name"))
+  
+		context = {
+			'form': ContactForm(request.POST)
+		}
+	else:
+		print("Você está acessando a página")
+	
+	
+	context = {
+		'form': ContactForm()
+	}
+	
+	return render(request, 'contact/create.html', context)
