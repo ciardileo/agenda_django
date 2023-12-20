@@ -3,13 +3,9 @@ from contact.models import Contact
 from django.http import Http404
 from django.db.models import Q
 from django.core.paginator import Paginator
-from django import forms
+from contact.forms import *
 
-# classe que gera um form automática para o model, com todos os campos que quisermos
-class ContactForm(forms.ModelForm):
-    class Meta:
-        model = Contact
-        fields = ('first_name', 'last_name', 'phone', 'email', 'category', 'description',)
+
 
 # Create your views here.
 
@@ -83,7 +79,7 @@ def contact_page(request, id):
 def create_contact(request):
 	if request.method == "POST":
 		print("Você enviou um formulário")
-		print(request.POST.get("first_name"))
+		# print(request.POST.get("first_name"))
   
 		context = {
 			'form': ContactForm(request.POST)
