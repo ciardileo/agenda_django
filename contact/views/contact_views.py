@@ -13,7 +13,7 @@ from contact.forms import *
 def index(request):
 	contact = Contact.objects.filter(show=True)
  
-	paginator = Paginator(contact, 25)
+	paginator = Paginator(contact, 10)
 	page_number = request.GET.get("page")
 	page_obj = paginator.get_page(page_number)
 	
@@ -86,10 +86,9 @@ def create_contact(request):
 		}
 	else:
 		print("Você está acessando a página")
-	
-	
-	context = {
-		'form': ContactForm()
-	}
-	
+		context = {
+				'form': ContactForm()
+			}
+			
+   
 	return render(request, 'contact/create.html', context)
