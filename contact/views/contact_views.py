@@ -80,10 +80,17 @@ def create_contact(request):
 	if request.method == "POST":
 		print("Você enviou um formulário")
 		# print(request.POST.get("first_name"))
-  
+		form = ContactForm(request.POST)
 		context = {
-			'form': ContactForm(request.POST)
+			'form': form
 		}
+
+		# salva o formulário se não tiver nenhum erro
+		if form.is_valid():
+			contact = form.save(commit=False)  # fazemos isso pro contato não ser salvo na hora, assim podemos fazer alterações
+			contact.save()
+			return redirect('create')
+
 	else:
 		print("Você está acessando a página")
 		context = {

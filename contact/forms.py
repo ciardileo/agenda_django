@@ -25,16 +25,15 @@ class ContactForm(forms.ModelForm):
         print(cleaned_data)
         
         # podemos adicionar erros específicos
-        self.add_error(
-            'first_name', ValidationError("Erro desconhecido", code=9)
-        )
+        if cleaned_data['first_name'] == cleaned_data['last_name']:
+            self.add_error('last_name', ValidationError('O primeiro nome não pode ser igual ao último', code=10))
         
         return super().clean()
     
     # podemos fazer a validação de forma específica para cada campo
     def clean_first_name(self):
         first_name = self.cleaned_data.get("first_name")
-        print("Paseei aqui")
+
         
         if first_name.lower() == "davi":
             raise ValidationError("Nome não compatível")
