@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from contact.models import Contact
 from django.http import Http404
 from django.db.models import Q
 from django.core.paginator import Paginator
 from contact.forms import *
+from django.urls import reverse
 
 
 
@@ -77,25 +78,60 @@ def contact_page(request, id):
 
 # página de criação de contato
 def create_contact(request):
+	form_action = reverse('create')
+	
 	if request.method == "POST":
 		print("Você enviou um formulário")
 		# print(request.POST.get("first_name"))
 		form = ContactForm(request.POST)
 		context = {
-			'form': form
+			'form': form,
+			'form_action': form_action
 		}
 
 		# salva o formulário se não tiver nenhum erro
 		if form.is_valid():
 			contact = form.save(commit=False)  # fazemos isso pro contato não ser salvo na hora, assim podemos fazer alterações
 			contact.save()
-			return redirect('create')
+			return redirect('update', id=contact.pk)
 
 	else:
 		print("Você está acessando a página")
 		context = {
 				'form': ContactForm()
 			}
+			
+   
+	return render(request, 'contact/create.html', context)
+
+
+# página de update de contato
+def update(request, id):
+	contact = get_object_or_404(Contact, id=id, show=True)
+	form_action = reverse('update', args=(id, ))
+ 
+	print(request.method)
+	
+	if request.method == "POST":
+		print("Você enviou um formulário")
+		form = ContactForm(request.POST, instance=contact)  # o instance serve para atualizar um contato existente
+		context = {
+			'form': form,
+			'form_action': form_action
+		}
+
+		# salva o formulário se não tiver nenhum erro
+		if form.is_valid():
+			contact = form.save(commit=False)  # fazemos isso pro contato não ser salvo na hora, assim podemos fazer alterações
+			contact.save()
+			return redirect('update', id=contact.pk)
+
+	else:
+		print("Você está acessando a página")
+		context = {
+				'form': ContactForm(instance=contact)
+			}
+  
 			
    
 	return render(request, 'contact/create.html', context)
