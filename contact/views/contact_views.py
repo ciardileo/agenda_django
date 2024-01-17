@@ -135,3 +135,11 @@ def update(request, id):
 			
    
 	return render(request, 'contact/create.html', context)
+
+
+# view de delete
+def delete(request, id):
+	contact = get_object_or_404(Contact, id=id, show=True)
+	contact.delete()
+ 
+	return redirect('index')

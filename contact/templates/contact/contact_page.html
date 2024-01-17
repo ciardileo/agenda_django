@@ -1,17 +1,26 @@
 {% extends "global/base.html" %}
 
 {% block title %}
-    <title>{{first_name}} {{last_name}}</title>
+	<title>{{first_name}} {{last_name}}</title>
 {% endblock title %}
 
 {% block content %}
 <div class="single-contact">
-    <h1 class="single-contact-name">{{first_name}} {{last_name}}</h1>
-    <p><strong>ID:</strong> {{id}}</p>
-    <p><strong>Email:</strong> {{email}}</p>
-    <p><strong>Phone:</strong> {{phone}}</p>
-    <p><strong>Date created:</strong> {{created_date}}</p>
-    <p><strong>Description:</strong> {{description}}</p>
-    <p><strong>Cateogory:</strong> {{category}}</p>
+	<h1 class="single-contact-name">{{first_name}} {{last_name}}</h1>
+	<p><strong>ID:</strong> {{id}}</p>
+	<p><strong>Email:</strong> {{email}}</p>
+	<p><strong>Phone:</strong> {{phone}}</p>
+	<p><strong>Date created:</strong> {{created_date}}</p>
+	<p><strong>Description:</strong> {{description}}</p>
+	<p><strong>Cateogory:</strong> {{category}}</p>
+
+	<div class="contact-links">
+		<a class="btn btn-link" href="{% url "update" id %}">Update</a>
+		
+		<form action="{% url "delete" id %}" method="POST">
+			{% csrf_token %}
+			<button class="btn btn-link btn-delete" type="submit">Delete</button>
+		</form>
+	</div>
 </div>
 {% endblock content %}
