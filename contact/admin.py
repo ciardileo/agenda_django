@@ -19,4 +19,3 @@ class ContactAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)  # campos que serão mostrados na tabela 
     ordering = ("-name",)  # ordena o id por ordem decrescente
-   

@@ -1,13 +1,24 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import UserCreationForm
+
+from django.contrib.auth.models import User
 from . import models
 
 
 # classe que gera um form automática para o model, com todos os campos que quisermos
 class ContactForm(forms.ModelForm):
+    picture = forms.ImageField(
+        widget=forms.FileInput(
+            attrs={
+                'accept': "image/*"
+            }
+        )
+    )
+    
     class Meta:
         model = models.Contact
-        fields = ('first_name', 'last_name', 'phone', 'email', 'category', 'description',)
+        fields = ('first_name', 'last_name', 'phone', 'email', 'category', 'description', 'picture')
         
         # podemos configurar os campos html
         widgets = {
@@ -39,4 +50,17 @@ class ContactForm(forms.ModelForm):
             raise ValidationError("Nome não compatível")
         
         return first_name
-    
+
+# classe que gera um form de criação de usuários 
+class RegisterForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'username', 'password1', 'password2')
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+
+        if User.objects.filter(email=email).exists():
+            self.add_error(
+                'email', ValidationError("Esse email já foi utilizado")
+            )

@@ -5,6 +5,8 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from contact.forms import *
 from django.urls import reverse
+from django.contrib import messages
+
 
 
 
@@ -83,7 +85,7 @@ def create_contact(request):
 	if request.method == "POST":
 		print("Você enviou um formulário")
 		# print(request.POST.get("first_name"))
-		form = ContactForm(request.POST)
+		form = ContactForm(request.POST, request.FILES)
 		context = {
 			'form': form,
 			'form_action': form_action
@@ -93,7 +95,10 @@ def create_contact(request):
 		if form.is_valid():
 			contact = form.save(commit=False)  # fazemos isso pro contato não ser salvo na hora, assim podemos fazer alterações
 			contact.save()
+			messages.success(request, "Contato criado com sucesso!")
 			return redirect('update', id=contact.pk)
+		else:
+			messages.error(request, "Erro desconhecido, tente novamente mais tarde")
 
 	else:
 		print("Você está acessando a página")
@@ -114,7 +119,7 @@ def update(request, id):
 	
 	if request.method == "POST":
 		print("Você enviou um formulário")
-		form = ContactForm(request.POST, instance=contact)  # o instance serve para atualizar um contato existente
+		form = ContactForm(request.POST, request.FILES, instance=contact)  # o instance serve para atualizar um contato existente
 		context = {
 			'form': form,
 			'form_action': form_action
@@ -124,16 +129,18 @@ def update(request, id):
 		if form.is_valid():
 			contact = form.save(commit=False)  # fazemos isso pro contato não ser salvo na hora, assim podemos fazer alterações
 			contact.save()
+			messages.success(request, "Contato atualizado com sucesso!")
 			return redirect('update', id=contact.pk)
+		else:
+			messages.error(request, "Ocorreu um erro, tente novamente mais tarde")
 
 	else:
-		print("Você está acessando a página")
+		print("Você está acessando a página")	
 		context = {
 				'form': ContactForm(instance=contact)
 			}
   
 			
-   
 	return render(request, 'contact/create.html', context)
 
 
@@ -142,4 +149,5 @@ def delete(request, id):
 	contact = get_object_or_404(Contact, id=id, show=True)
 	contact.delete()
  
+	messages.warning(request, f"Usuário {contact.first_name} {contact.last_name} deletado com sucesso!")
 	return redirect('index')

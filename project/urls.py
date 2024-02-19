@@ -26,6 +26,7 @@ urlpatterns = [
     path('contact/<int:id>/update/', views.update, name='update'),
     path('contact/<int:id>/delete/', views.delete, name='delete'),
     path("contact/create", views.create_contact, name='create'),
+    path("user/create/", views.register, name="register"),
     path('search/', views.search, name='search'),
     path('', views.index, name='index')
 ]
